@@ -8,36 +8,45 @@ class GoogleMainPage:
     search_input_locator = "[name=q]"
     search_input_cross_locator = "[role='button'][jsname='pkjasb']"
 
+    @allure.step("Открытие главной страницы Google")
     def open(self):
         browser.open(self.url)
+        return self
 
-    @allure.step("Click to search input")
+    @allure.step("Клик в поле поиска")
     def click_to_search_input(self):
         browser.element(self.search_input_locator).click()
+        return self
 
-    @allure.step("Fill search input with text")
+    @allure.step("Ввод текста в поле поиска")
     def fill_search_input(self, text):
         browser.element(self.search_input_locator).type(text)
+        return self
 
-    @allure.step("Click to search input cross")
+    @allure.step("Клик в крестик в поле поиска")
     def clear_search_input(self):
         browser.element(self.search_input_cross_locator).click()
+        return self
 
-    @allure.step("Search input is empty")
+    @allure.step("Поле ввода пустое")
     def search_input_is_empty(self):
-        return browser.element(self.search_input_locator).matching(be.blank)
+        browser.element(self.search_input_locator).should(be.blank)
+        return self
 
-    @allure.step("Search input is not empty")
+    @allure.step("Поле ввода не пустое")
     def search_input_is_not_empty(self):
-        return browser.element(self.search_input_locator).matching(be.not_.blank)
+        browser.element(self.search_input_locator).should(be.not_.blank)
+        return self
 
-    @allure.step("Search input cross is visible")
-    def search_input_have_cross(self):
-        return browser.element(self.search_input_cross_locator).matching(be.visible)
+    @allure.step("Крестик в поле поиска виден")
+    def search_input_has_cross(self):
+        browser.element(self.search_input_cross_locator).should(be.visible)
+        return self
 
-    @allure.step("Search input cross is not visible")
-    def search_input_have_not_cross(self):
-        return browser.element(self.search_input_cross_locator).matching(be.not_.visible)
+    @allure.step("Крестик в поле поиска не виден")
+    def search_input_has_no_cross(self):
+        browser.element(self.search_input_cross_locator).should(be.not_.visible)
+        return self
 
     def search_input_history_list_is_visible(self):
         pass
