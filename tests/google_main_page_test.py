@@ -1,4 +1,6 @@
 import allure
+import pytest
+
 from pages.google_main_page import GoogleMainPage
 from faker import Faker
 
@@ -40,11 +42,34 @@ class TestGoogleMainPage:
             google_main_page.search_input_suggest_list_not_visible()
 
         @allure.title("Тест клика в случайную подсказку")
-        def test_suggest_item_click(self):
+        def test_click_on_suggest_item(self):
             google_main_page = GoogleMainPage()
             google_main_page.open()
             google_main_page.fill_search_input(text=self.search_text)
             google_main_page.search_input_suggest_list_is_visible()
             item_text = google_main_page.click_to_any_suggest_list_item()
             google_main_page.search_input_have_correct_text(item_text.lower())
+
+        @allure.title("Тест ховера на случайной подсказке")
+        def test_hover_on_suggest_item(self):
+            google_main_page = GoogleMainPage()
+            google_main_page.open()
+            google_main_page.fill_search_input(text=self.search_text)
+            google_main_page.search_input_suggest_list_is_visible()
+            item = google_main_page.hover_to_any_suggest_list_item()
+            google_main_page.list_item_is_highlighted(item)
+            google_main_page.single_list_item_is_highlighted_only()
+
+        @allure.title("Тест появления истории поиска")
+        @pytest.mark.skip
+        def test_add_item_to_search_history(self):
+            google_main_page = GoogleMainPage()
+            google_main_page.open()
+            google_main_page.click_to_search_input()
+            google_main_page.search_input_history_list_not_visible()
+            google_main_page.make_search(text=self.search_text)
+            google_main_page.search_results_are_visible()
+            google_main_page.open()
+            google_main_page.click_to_search_input()
+            google_main_page.search_input_history_list_is_visible()
 
