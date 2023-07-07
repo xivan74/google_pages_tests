@@ -2,6 +2,8 @@ import allure
 from selene.support.shared import browser
 from selene import be, have
 from random import randint
+from selenium.webdriver import ActionChains
+from selenium.webdriver.common.keys import Keys as keys
 
 
 class GoogleMainPage:
@@ -33,14 +35,30 @@ class GoogleMainPage:
         browser.element(self.SEARCH_INPUT).click()
         return self
 
+    @allure.step("Кликнуть в крестик в поле поиска")
+    def clear_search_input(self):
+        browser.element(self.SEARCH_INPUT_CROSS).click()
+        return self
+
     @allure.step("Ввести текст в поле поиска")
     def fill_search_input(self, text: str):
         browser.element(self.SEARCH_INPUT).type(text)
         return self
 
-    @allure.step("Кликнуть в крестик в поле поиска")
-    def clear_search_input(self):
-        browser.element(self.SEARCH_INPUT_CROSS).click()
+    def send_keys(self, key):
+        actions = ActionChains(browser.driver)
+        actions.send_keys(key)
+        actions.perform()
+        return self
+
+    @allure.step("Нажать клавишу")
+    def press_button(self, key):
+        self.send_keys(key)
+        return self
+
+    @allure.step("Написать текст")
+    def press_button(self, text):
+        self.send_keys(text)
         return self
 
     @allure.step("Поле ввода пустое")
@@ -55,7 +73,7 @@ class GoogleMainPage:
 
     @allure.step("Поле ввода содержит нужный текст")
     def search_input_have_correct_text(self, text: str):
-        browser.element(self.SEARCH_INPUT).should(have.text(text))
+        browser.element(self.SEARCH_INPUT).should(have.value(text))
         return self
 
     @allure.step("Крестик в поле поиска виден")
@@ -98,6 +116,21 @@ class GoogleMainPage:
         browser.element(self.SEARCH_INPUT_RECOMMENDATIONS_LIST).should(be.not_.visible)
         return self
 
+    @allure.step("Получить текст подсказки с индексом")
+    def get_text_of_list_item_by_index(self, item_index):
+        suggest_list = browser.element(self.SEARCH_INPUT_SUGGEST_LIST)
+        suggest_list_items = suggest_list.all(self.SEARCH_INPUT_LIST_ITEM)
+        suggest_list_item_text = suggest_list_items[item_index].locate().text
+        return suggest_list_item_text
+
+    @allure.step("Получить текст подсвеченной подсказки")
+    def get_highlighted_item_text(self):
+        suggest_list = browser.element(self.SEARCH_INPUT_SUGGEST_LIST)
+        highlighted_item = suggest_list.all(self.SEARCH_INPUT_LIST_ITEM) \
+            .by(have.css_class(self.HIGHLIGHTED_SEARCH_ITEM_CLASS_NAME))[0]
+        highlighted_item_text = highlighted_item.locate().text
+        return highlighted_item_text
+
     @allure.step("Кликнуть на любую подсказку")
     def click_to_any_suggest_list_item(self):
         suggest_list = browser.element(self.SEARCH_INPUT_SUGGEST_LIST)
@@ -133,6 +166,13 @@ class GoogleMainPage:
         list_item.should(have.css_class(self.HIGHLIGHTED_SEARCH_ITEM_CLASS_NAME))
         return self
 
+    @allure.step("Элемент подсказки с индексом i подсвечен")
+    def list_item_by_index_is_highlighted(self, i: int):
+        suggest_list = browser.element(self.SEARCH_INPUT_SUGGEST_LIST)
+        list_item = suggest_list.all(self.SEARCH_INPUT_LIST_ITEM)[i]
+        self.list_item_is_highlighted(list_item)
+        return self
+
     @allure.step("Подсвечен ровно один элемент подсказки")
     def single_list_item_is_highlighted_only(self):
         suggest_list = browser.element(self.SEARCH_INPUT_SUGGEST_LIST)
@@ -140,6 +180,27 @@ class GoogleMainPage:
             .by(have.css_class(self.HIGHLIGHTED_SEARCH_ITEM_CLASS_NAME)) \
             .should(have.size(1))
         return self
+
+    @allure.step("Не подсвечен ни один элемент подсказки")
+    def no_highlighted_list_items(self):
+        suggest_list = browser.element(self.SEARCH_INPUT_SUGGEST_LIST)
+        suggest_list.all(self.SEARCH_INPUT_LIST_ITEM) \
+            .by(have.css_class(self.HIGHLIGHTED_SEARCH_ITEM_CLASS_NAME)) \
+            .should(have.size(0))
+        return self
+
+    @allure.step("Нажать клавишу 'Стрелка Вниз'")
+    def press_a_down_key(self):
+        self.press_button(keys.ARROW_DOWN)
+        return self
+
+    @allure.step("Нажать клавишу 'Стрелка Вниз' несколько раз")
+    def press_a_down_key_a_few_times(self):
+        suggest_list_items = browser.element(self.SEARCH_INPUT_SUGGEST_LIST).all(self.SEARCH_INPUT_LIST_ITEM)
+        times_to_press = randint(1, len(suggest_list_items))
+        for i in range(times_to_press):
+            self.press_button(keys.ARROW_DOWN)
+        return times_to_press
 
     def click_to_suggest_list_item_with_text(self, item_text):
         pass

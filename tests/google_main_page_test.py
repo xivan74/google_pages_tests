@@ -73,3 +73,16 @@ class TestGoogleMainPage:
             google_main_page.click_to_search_input()
             google_main_page.search_input_history_list_is_visible()
 
+        @allure.title("Тест перемещения по подсказкам с помощью стрелок на клавиатуре")
+        def test_hover_on_suggest_item(self):
+            google_main_page = GoogleMainPage()
+            google_main_page.open()
+            google_main_page.fill_search_input(text=self.search_text)
+            google_main_page.search_input_suggest_list_is_visible()
+            google_main_page.no_highlighted_list_items()
+            pressed_times = google_main_page.press_a_down_key_a_few_times()
+            google_main_page.list_item_by_index_is_highlighted(pressed_times-1)
+            google_main_page.single_list_item_is_highlighted_only()
+            item_text = google_main_page.get_highlighted_item_text()
+            google_main_page.search_input_have_correct_text(item_text.lower())
+
