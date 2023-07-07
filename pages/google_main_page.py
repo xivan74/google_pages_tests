@@ -57,7 +57,7 @@ class GoogleMainPage:
         return self
 
     @allure.step("Написать текст")
-    def press_button(self, text):
+    def write_text(self, text):
         self.send_keys(text)
         return self
 
@@ -88,8 +88,9 @@ class GoogleMainPage:
 
     @allure.step("Список подсказок виден")
     def search_input_suggest_list_is_visible(self):
-        browser.element(self.SEARCH_INPUT_SUGGEST_LIST).should(be.visible)
-        return self
+        suggest_list = browser.element(self.SEARCH_INPUT_SUGGEST_LIST)
+        suggest_list.should(be.visible)
+        return suggest_list
 
     @allure.step("Список подсказок не виден")
     def search_input_suggest_list_not_visible(self):
@@ -98,8 +99,9 @@ class GoogleMainPage:
 
     @allure.step("Список истории виден")
     def search_input_history_list_is_visible(self):
-        browser.element(self.SEARCH_INPUT_HISTORY_LIST).should(be.visible)
-        return self
+        history_list = browser.element(self.SEARCH_INPUT_HISTORY_LIST)
+        history_list.should(be.visible)
+        return history_list
 
     @allure.step("Список истории не виден")
     def search_input_history_list_not_visible(self):
@@ -108,8 +110,9 @@ class GoogleMainPage:
 
     @allure.step("Список рекоммендаций виден")
     def search_input_recommendations_list_is_visible(self):
-        browser.element(self.SEARCH_INPUT_RECOMMENDATIONS_LIST).should(be.visible)
-        return self
+        recommend_list = browser.element(self.SEARCH_INPUT_RECOMMENDATIONS_LIST)
+        recommend_list.should(be.visible)
+        return recommend_list
 
     @allure.step("Список рекоммендаций не виден")
     def search_input_recommendations_list_not_visible(self):
@@ -117,23 +120,20 @@ class GoogleMainPage:
         return self
 
     @allure.step("Получить текст подсказки с индексом")
-    def get_text_of_list_item_by_index(self, item_index):
-        suggest_list = browser.element(self.SEARCH_INPUT_SUGGEST_LIST)
+    def get_text_of_list_item_by_index(self, suggest_list, item_index):
         suggest_list_items = suggest_list.all(self.SEARCH_INPUT_LIST_ITEM)
         suggest_list_item_text = suggest_list_items[item_index].locate().text
         return suggest_list_item_text
 
     @allure.step("Получить текст подсвеченной подсказки")
-    def get_highlighted_item_text(self):
-        suggest_list = browser.element(self.SEARCH_INPUT_SUGGEST_LIST)
+    def get_highlighted_item_text(self, suggest_list):
         highlighted_item = suggest_list.all(self.SEARCH_INPUT_LIST_ITEM) \
             .by(have.css_class(self.HIGHLIGHTED_SEARCH_ITEM_CLASS_NAME))[0]
         highlighted_item_text = highlighted_item.locate().text
         return highlighted_item_text
 
     @allure.step("Кликнуть на любую подсказку")
-    def click_to_any_suggest_list_item(self):
-        suggest_list = browser.element(self.SEARCH_INPUT_SUGGEST_LIST)
+    def click_to_any_suggest_list_item(self, suggest_list):
         suggest_list_items = suggest_list.all(self.SEARCH_INPUT_LIST_ITEM)
         item_index = randint(0, len(suggest_list_items) - 1)
         suggest_list_item = suggest_list_items[item_index]
@@ -142,8 +142,7 @@ class GoogleMainPage:
         return suggest_list_item_text
 
     @allure.step("Навести мышь на любую подсказку")
-    def hover_to_any_suggest_list_item(self):
-        suggest_list = browser.element(self.SEARCH_INPUT_SUGGEST_LIST)
+    def hover_to_any_suggest_list_item(self, suggest_list):
         suggest_list_items = suggest_list.all(self.SEARCH_INPUT_LIST_ITEM)
         item_index = randint(0, len(suggest_list_items) - 1)
         suggest_list_item = suggest_list_items[item_index]
@@ -158,8 +157,9 @@ class GoogleMainPage:
 
     @allure.step("Видны результаты поиска")
     def search_results_are_visible(self):
-        browser.element(self.SEARCH_RESULTS).should(be.visible)
-        return self
+        search_results = browser.element(self.SEARCH_RESULTS)
+        search_results.should(be.visible)
+        return search_results
 
     @allure.step("Элемент подсказки подсвечен")
     def list_item_is_highlighted(self, list_item):
@@ -167,23 +167,20 @@ class GoogleMainPage:
         return self
 
     @allure.step("Элемент подсказки с индексом i подсвечен")
-    def list_item_by_index_is_highlighted(self, i: int):
-        suggest_list = browser.element(self.SEARCH_INPUT_SUGGEST_LIST)
+    def list_item_by_index_is_highlighted(self, suggest_list, i: int):
         list_item = suggest_list.all(self.SEARCH_INPUT_LIST_ITEM)[i]
         self.list_item_is_highlighted(list_item)
-        return self
+        return list_item
 
     @allure.step("Подсвечен ровно один элемент подсказки")
-    def single_list_item_is_highlighted_only(self):
-        suggest_list = browser.element(self.SEARCH_INPUT_SUGGEST_LIST)
+    def single_list_item_is_highlighted_only(self, suggest_list):
         suggest_list.all(self.SEARCH_INPUT_LIST_ITEM) \
             .by(have.css_class(self.HIGHLIGHTED_SEARCH_ITEM_CLASS_NAME)) \
             .should(have.size(1))
         return self
 
     @allure.step("Не подсвечен ни один элемент подсказки")
-    def no_highlighted_list_items(self):
-        suggest_list = browser.element(self.SEARCH_INPUT_SUGGEST_LIST)
+    def no_highlighted_list_items(self, suggest_list):
         suggest_list.all(self.SEARCH_INPUT_LIST_ITEM) \
             .by(have.css_class(self.HIGHLIGHTED_SEARCH_ITEM_CLASS_NAME)) \
             .should(have.size(0))
@@ -195,8 +192,8 @@ class GoogleMainPage:
         return self
 
     @allure.step("Нажать клавишу 'Стрелка Вниз' несколько раз")
-    def press_a_down_key_a_few_times(self):
-        suggest_list_items = browser.element(self.SEARCH_INPUT_SUGGEST_LIST).all(self.SEARCH_INPUT_LIST_ITEM)
+    def press_a_down_key_a_few_times(self, suggest_list):
+        suggest_list_items = suggest_list.all(self.SEARCH_INPUT_LIST_ITEM)
         times_to_press = randint(1, len(suggest_list_items))
         for i in range(times_to_press):
             self.press_button(keys.ARROW_DOWN)
