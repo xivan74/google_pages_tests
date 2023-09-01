@@ -1,7 +1,7 @@
 import allure
 import pytest
 
-from pages.google_main_page import GoogleMainPage
+from pages.google_pages import GoogleMainPage, GoogleResultsPage
 from faker import Faker
 
 
@@ -48,7 +48,8 @@ class TestGoogleMainPage:
             google_main_page.fill_search_input(text=self.search_text)
             suggest_list = google_main_page.search_input_suggest_list_is_visible()
             item_text = google_main_page.click_to_any_suggest_list_item(suggest_list)
-            google_main_page.search_input_have_correct_text(item_text.lower())
+            google_results_page = GoogleResultsPage(search_query=item_text)
+            google_results_page.search_input_have_correct_text(google_results_page.search_query)
 
         @allure.title("Тест ховера на случайной подсказке")
         def test_hover_on_suggest_item(self):

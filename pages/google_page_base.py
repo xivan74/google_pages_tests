@@ -6,7 +6,7 @@ from selenium.webdriver import ActionChains
 from selenium.webdriver.common.keys import Keys as keys
 
 
-class GoogleMainPage:
+class GooglePageBase:
     url = "https://google.com"
     SEARCH_INPUT = "[name='q'][type='search']"
     SEARCH_INPUT_CROSS = "[role='button'][jsname='pkjasb']"

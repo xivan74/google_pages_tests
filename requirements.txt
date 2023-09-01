@@ -1,5 +1,5 @@
 pytest~=7.4.0
 Faker~=18.11.2
 allure-pytest~=2.13.2
-selene~=2.0.0rc3.post3
 selenium~=4.10.0
+selene~=2.0.0rc4
