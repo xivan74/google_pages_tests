@@ -90,7 +90,7 @@ class GooglePageBase:
     def search_input_suggest_list_is_visible(self):
         suggest_list = browser.element(self.SEARCH_INPUT_SUGGEST_LIST)
         suggest_list.should(be.visible)
-        return suggest_list
+        return self
 
     @allure.step("Список подсказок не виден")
     def search_input_suggest_list_not_visible(self):
@@ -120,20 +120,23 @@ class GooglePageBase:
         return self
 
     @allure.step("Получить текст подсказки с индексом")
-    def get_text_of_list_item_by_index(self, suggest_list, item_index):
+    def get_text_of_list_item_by_index(self, item_index):
+        suggest_list = browser.element(self.SEARCH_INPUT_SUGGEST_LIST)
         suggest_list_items = suggest_list.all(self.SEARCH_INPUT_LIST_ITEM)
         suggest_list_item_text = suggest_list_items[item_index].locate().text
         return suggest_list_item_text
 
     @allure.step("Получить текст подсвеченной подсказки")
-    def get_highlighted_item_text(self, suggest_list):
+    def get_highlighted_item_text(self):
+        suggest_list = browser.element(self.SEARCH_INPUT_SUGGEST_LIST)
         highlighted_item = suggest_list.all(self.SEARCH_INPUT_LIST_ITEM) \
             .by(have.css_class(self.HIGHLIGHTED_SEARCH_ITEM_CLASS_NAME))[0]
         highlighted_item_text = highlighted_item.locate().text
         return highlighted_item_text
 
     @allure.step("Кликнуть на любую подсказку")
-    def click_to_any_suggest_list_item(self, suggest_list):
+    def click_to_any_suggest_list_item(self):
+        suggest_list = browser.element(self.SEARCH_INPUT_SUGGEST_LIST)
         suggest_list_items = suggest_list.all(self.SEARCH_INPUT_LIST_ITEM)
         item_index = randint(0, len(suggest_list_items) - 1)
         suggest_list_item = suggest_list_items[item_index]
@@ -142,7 +145,8 @@ class GooglePageBase:
         return suggest_list_item_text
 
     @allure.step("Навести мышь на любую подсказку")
-    def hover_to_any_suggest_list_item(self, suggest_list):
+    def hover_to_any_suggest_list_item(self):
+        suggest_list = browser.element(self.SEARCH_INPUT_SUGGEST_LIST)
         suggest_list_items = suggest_list.all(self.SEARCH_INPUT_LIST_ITEM)
         item_index = randint(0, len(suggest_list_items) - 1)
         suggest_list_item = suggest_list_items[item_index]
@@ -167,20 +171,23 @@ class GooglePageBase:
         return self
 
     @allure.step("Элемент подсказки с индексом i подсвечен")
-    def list_item_by_index_is_highlighted(self, suggest_list, i: int):
+    def list_item_by_index_is_highlighted(self, i: int):
+        suggest_list = browser.element(self.SEARCH_INPUT_SUGGEST_LIST)
         list_item = suggest_list.all(self.SEARCH_INPUT_LIST_ITEM)[i]
         self.list_item_is_highlighted(list_item)
         return list_item
 
     @allure.step("Подсвечен ровно один элемент подсказки")
-    def single_list_item_is_highlighted_only(self, suggest_list):
+    def single_list_item_is_highlighted_only(self):
+        suggest_list = browser.element(self.SEARCH_INPUT_SUGGEST_LIST)
         suggest_list.all(self.SEARCH_INPUT_LIST_ITEM) \
             .by(have.css_class(self.HIGHLIGHTED_SEARCH_ITEM_CLASS_NAME)) \
             .should(have.size(1))
         return self
 
     @allure.step("Не подсвечен ни один элемент подсказки")
-    def no_highlighted_list_items(self, suggest_list):
+    def no_highlighted_list_items(self):
+        suggest_list = browser.element(self.SEARCH_INPUT_SUGGEST_LIST)
         suggest_list.all(self.SEARCH_INPUT_LIST_ITEM) \
             .by(have.css_class(self.HIGHLIGHTED_SEARCH_ITEM_CLASS_NAME)) \
             .should(have.size(0))
@@ -192,7 +199,8 @@ class GooglePageBase:
         return self
 
     @allure.step("Нажать клавишу 'Стрелка Вниз' несколько раз")
-    def press_a_down_key_a_few_times(self, suggest_list):
+    def press_a_down_key_a_few_times(self):
+        suggest_list = browser.element(self.SEARCH_INPUT_SUGGEST_LIST)
         suggest_list_items = suggest_list.all(self.SEARCH_INPUT_LIST_ITEM)
         times_to_press = randint(1, len(suggest_list_items))
         for i in range(times_to_press):
