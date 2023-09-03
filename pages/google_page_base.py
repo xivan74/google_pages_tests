@@ -10,7 +10,6 @@ class GooglePageBase:
     url = "https://google.com"
     SEARCH_INPUT = "[name='q'][type='search']"
     SEARCH_INPUT_CROSS = "[role='button'][jsname='pkjasb']"
-    SEARCH_RESULTS = "#search"
     # Встречается 3 вида выпадающих списков. У каждого из них своя специфика.
     # Список с подсказками. Появляется, когда что-то введено в строку поиска. В этом списке может быть рекламная строка
     SEARCH_INPUT_SUGGEST_LIST = "//ul[@role='listbox'][@jsname='bw4e9b'][.//*[contains(@class, 'sb43')" \
@@ -24,6 +23,8 @@ class GooglePageBase:
     SEARCH_INPUT_LIST_ITEM = ".//li"
     SEARCH_INPUT_LIST_ITEM_TEXT = ".//*[contains(@class, 'wM6W7d')]/*"
     HIGHLIGHTED_SEARCH_ITEM_CLASS_NAME = "sbhl"
+    APPS_BUTTON = "#gbwa"
+    APPS_LIST_FRAME = "[name='app']"
 
     @allure.step("Открыть главную страницу Google")
     def open(self):
@@ -101,7 +102,7 @@ class GooglePageBase:
     def search_input_history_list_is_visible(self):
         history_list = browser.element(self.SEARCH_INPUT_HISTORY_LIST)
         history_list.should(be.visible)
-        return history_list
+        return self
 
     @allure.step("Список истории не виден")
     def search_input_history_list_not_visible(self):
@@ -112,7 +113,7 @@ class GooglePageBase:
     def search_input_recommendations_list_is_visible(self):
         recommend_list = browser.element(self.SEARCH_INPUT_RECOMMENDATIONS_LIST)
         recommend_list.should(be.visible)
-        return recommend_list
+        return self
 
     @allure.step("Список рекоммендаций не виден")
     def search_input_recommendations_list_not_visible(self):
@@ -159,12 +160,6 @@ class GooglePageBase:
         browser.element(self.SEARCH_INPUT).press_enter()
         return self
 
-    @allure.step("Видны результаты поиска")
-    def search_results_are_visible(self):
-        search_results = browser.element(self.SEARCH_RESULTS)
-        search_results.should(be.visible)
-        return search_results
-
     @allure.step("Элемент подсказки подсвечен")
     def list_item_is_highlighted(self, list_item):
         list_item.should(have.css_class(self.HIGHLIGHTED_SEARCH_ITEM_CLASS_NAME))
@@ -175,7 +170,7 @@ class GooglePageBase:
         suggest_list = browser.element(self.SEARCH_INPUT_SUGGEST_LIST)
         list_item = suggest_list.all(self.SEARCH_INPUT_LIST_ITEM)[i]
         self.list_item_is_highlighted(list_item)
-        return list_item
+        return self
 
     @allure.step("Подсвечен ровно один элемент подсказки")
     def single_list_item_is_highlighted_only(self):
